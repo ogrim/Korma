@@ -377,3 +377,12 @@
          (select :test (where {:cool [in []]}))
          "SELECT \"test\".* FROM \"test\" WHERE (\"test\".\"cool\" IN (NULL))"
          )))
+
+(deftest test-query-only-is-idempotent
+  (let [family "Indo-European"]
+    (= (query-only (select :languages (where (= :family family))))
+       (query-only (exec (query-only (select :languages (where (= :family family)))))))
+    (let [q1 (-> (select* :languages) (where {:family family}))
+          q2 (where q1 (> :updated-at (java.sql.Timestamp. 0)))]
+      (is (= "SELECT \"languages\".* FROM \"languages\" WHERE (\"languages\".\"family\" = ?) AND \"languages\".\"updated-at\" > ?"
+             (sql-only (exec q2)))))))
