@@ -158,7 +158,8 @@
 ;; Predicates
 ;;*****************************************************
 
-(def predicates {'like 'korma.sql.fns/pred-like
+(def predicates {'match 'korma.sql.fns/pred-match
+                 'like 'korma.sql.fns/pred-like
                  'and 'korma.sql.fns/pred-and
                  'or 'korma.sql.fns/pred-or
                  'not 'korma.sql.fns/pred-not
@@ -191,7 +192,7 @@
   (utils/pred do-wrapper [op v]))
 
 (defn pred-and [& args] (group-with " AND " args))
-(defn pred-= [k v] (cond 
+(defn pred-= [k v] (cond
                      (not-nil? k v) (infix k "=" v)
                      (not-nil? k) (infix k "IS" v)
                      (not-nil? v) (infix v "IS" k)))
@@ -204,7 +205,7 @@
                        [pred-= v])
         pred? (predicates func)
         func (if pred?
-               (resolve pred?) 
+               (resolve pred?)
                func)]
     (func k value)))
 
@@ -355,7 +356,7 @@
 (defmulti ->sql :type)
 (defmethod ->sql :select [query]
   (bind-params
-    (-> query 
+    (-> query
       (sql-select)
       (sql-joins)
       (sql-where)
@@ -365,18 +366,18 @@
 
 (defmethod ->sql :update [query]
   (bind-params
-    (-> query 
+    (-> query
       (sql-update)
       (sql-set)
       (sql-where))))
 
 (defmethod ->sql :delete [query]
   (bind-params
-    (-> query 
+    (-> query
       (sql-delete)
       (sql-where))))
 
 (defmethod ->sql :insert [query]
   (bind-params
-    (-> query 
+    (-> query
       (sql-insert))))

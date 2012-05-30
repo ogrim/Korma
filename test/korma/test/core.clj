@@ -387,3 +387,11 @@
           q2 (where q1 (> :updated-at (java.sql.Timestamp. 0)))]
       (is (= "SELECT \"languages\".* FROM \"languages\" WHERE (\"languages\".\"family\" = ?) AND \"languages\".\"updated-at\" > ?"
              (sql-only (exec q2)))))))
+
+(deftest sqlite-match
+  (sql-only
+    (are [query result] (= query result)
+         (select :test (where (match :text "name")))
+         "SELECT \"test\".* FROM \"test\" WHERE \"test\".\"text\" MATCH ?"
+         (select :test (where {:text [match "name"]}))
+         "SELECT \"test\".* FROM \"test\" WHERE (\"test\".\"text\" MATCH ?)")))

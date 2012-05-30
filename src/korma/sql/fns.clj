@@ -18,6 +18,7 @@
 (defn pred->= [k v] (infix k ">=" v))
 (defn pred-<= [k v] (infix k "<=" v))
 (defn pred-like [k v] (infix k "LIKE" v))
+(defn pred-match [k v] (infix k "MATCH" v))
 
 (def pred-= eng/pred-=)
 (defn pred-not= [k v] (cond
